@@ -64,31 +64,30 @@ set run_check_lvs 0;# set this to 1 if the design is legalized , otherwise defau
 
 ##########################################################   start - (optional) open_block   ########################################################## 
 
-#open_lib out/2nd/test_4pg_lib;open_block test_4pg ;# block OK 
-#open_block out/scu_top_syn_wrap_lib:scu_top_syn_wrap/init
-#open_block out/nfi_cbu_lib:nfi_cbu/init
-#open_block out/mcu_top_lib:mcu_top/place
-#open_block out/mcu_top_lib:pre_pg_fix
-
-#open_block out/cfg_car_top_lib:cfg_car_top/init
-#open_block out/cfg_car_top_lib:cfg_car_top/initial_place
-#open_block out/2nd/cfg_car_top_lib:cfg_car_top/place
-
-#set vdd_net VDD;set vss_net VSS;
-#legalize_placement
-#add_tie_cells -objects [get_pins -leaf -of_objects [get_cells -hierarchical ] -filter constant_value==0]
-#add_tie_cells -objects [get_pins -leaf -of_objects [get_cells -hierarchical ] -filter constant_value==1]
-#legalize_placement -cells [get_cells -filter ref_name=~*_TIE*]
-#connect_pg_net -net $vdd_net [get_pins -hier -filter name==${vdd_net}]
-#connect_pg_net -net $vss_net [get_pins -hier -filter name==${vss_net}]
+proc mt {args} {
+	global tab_count
+	set tab_string ""
+	set time [clock seconds]
+	set command [join $args]
+	incr tab_count
+	for {set i $tab_count} {$i > 0} {set i [expr $i - 1]} {
+		append tab_string "\t"
+	} 
+	echo "${tab_string}### <Start> ### Started timer for command \"$command\" (Start at: [lindex [date] 2]\/[lindex [date] 1]\/[lindex [date] 4] - [lindex [date] 3])"
+	uplevel $args
+	set mins [expr ([clock seconds] - $time) / 60]
+	set hours [expr $mins / 60]
+	set mins [expr $mins % 60]
+	set secs [expr ([clock seconds] - $time) % 60]
+	echo [format "${tab_string}###  <End>  ### Runtime: %02d:%02d:%02d for command \"$command\" (Ended at: [lindex [date] 2]\/[lindex [date] 1]\/[lindex [date] 4] - [lindex [date] 3])" $hours $mins $secs]
+	set tab_count [expr $tab_count - 1]
+}
+# mt ...
 
 save_block -as pre_pg_fix
 
-#connect_pg_net -automatic
-
 #set sub_block [get_cells -hierarchical -filter design_type==module&&is_physical&&is_hierarchical -quiet]
 #set sub_block [get_cells -quiet {test_top test_top1 test_top2}]; 
-
 
 #set top_design [get_attribute [current_design] name]
 set top_design [get_attribute [current_block] full_name]
@@ -98,6 +97,7 @@ set design_name [get_attribute [current_block] design_name]
 
 if {[get_attribute $top_design name] == "cfg_car_top"} {
     set run_overide_pg_mesh_locally 1
+	# Einav: modified basic definition in AVGO script (Gilad) - 
     set local_pg_generation_script /bespace/users/ex-gilads/nextflow/be_work/brcm3/nfi_cbu/pnr/RTFM/fc_create_power_grid.brcm3.tcl
     set ips_with_M7M8_pg_pins "ds03_tessent_occ_01 cpll03_pllsys01_top_ns_02"
     set maxInstBlkLyr_subblocks 6
@@ -234,9 +234,13 @@ if {$ROUTING_LAYER_DIRECTION_OFFSET_LIST != ""} {
 }
 
 ##########################################################   mems clasification  ########################################################## 
-
 #set mems [get_cells -hierarchical -filter is_hard_macro&&is_memory_cell -quiet ]
 set mems [get_cells -hierarchical -filter is_hard_macro&&ref_name=~M3* -quiet ]
+set softip [get_cells * -filter "((is_soft_macro==true) && is_physical_only == false && ref_name!~M3*)" -hier]
+foreach ip [get_object_name $softip] {
+	set ip_mems [get_cells -hierarchical -filter "is_hard_macro && ref_name=~M3* && full_name!~${ip}*" -quiet]
+	set mems [remove_from_collection $mems $ip_mems]
+}
 
 if {[sizeof_collection $mems ] } {
     set_attribute $mems was_via_shifted false
@@ -263,9 +267,13 @@ if {[sizeof_collection $mems ] } {
     }
 }
 
-
 ##################################################################   procs   ########################################################## 
-
+# Einav: TODO flow good practice should not allow users to overwrite the MEM KOM or add hard blockages before PG/ BWT flow,
+# Flow basic:
+# BWT
+# PG generation
+# (this script) PG post processing
+# blockages and everything else . . .
 proc search_boundary_cells_around_mem {inst at_x at_y side} {
     set marker_cell "" ;# default is no boundary cells
     set x_width [get_attribute [get_cells $inst] width]
@@ -305,7 +313,6 @@ proc search_boundary_cells_around_mem {inst at_x at_y side} {
 # floating instances , missing vias
 
 ##############################################################   clean mems     ##############################################################    
-
 proc clean_pg_around_mems_auto {mems cut_intersect_vias} {
     foreach x [get_object_name $mems] {
 	echo "INFO - cleaning pg around mem:$x"
@@ -420,7 +427,6 @@ proc clean_pg_inside_bbox_manual {llx lly urx ury layer} {
 
     
 ##############################################################   clean block boundary     ##############################################################    
-
 proc clean_pg_around_die_auto {} {
     global M0_bbox_cut_offset_X_core
     global row_h2
@@ -431,99 +437,98 @@ proc clean_pg_around_die_auto {} {
     set resize_urx [expr -1*$M0_bbox_cut_offset_X_core]
     set resize_ury [expr  -1*$row_h2/2.0]
     
-    set split_area_core [get_attribute [resize_polygons -size "$resize_llx $resize_lly $resize_urx $resize_ury" [get_attribute [get_blocks $top_design] core_area_boundary]] poly_rects]
-    set split_area_die [get_attribute [get_blocks $top_design] boundary_bounding_box]
-    set split_area_m5 [get_attribute [resize_polygons -size "0 0 0 0" [get_attribute [get_blocks $top_design] core_area_boundary]] poly_rects]
- 
+	set top_module_name [get_att [current_block] top_module_name]
+    set split_area_core [get_attribute [resize_polygons -size "$resize_llx $resize_lly $resize_urx $resize_ury" [get_attribute [current_block] core_area_boundary]] poly_rects]
+    set split_area_die [get_attribute [current_block] boundary_bounding_box]
+    set split_area_m5 [get_attribute [resize_polygons -size "0 0 0 0" [get_attribute [current_block] core_area_boundary]] poly_rects]
     
     #shapes cleanup M0
-    set split_objects [get_shapes -intersect $split_area_core -filter layer.name==M0&&shape_use==stripe&&valid_for_cut] ;# M0 objects to split
-    
-    #in case of complex block shape , like L-shape or other, need to split by line
-    for {set i 0} {$i< [llength [get_attribute $split_area_core point_list]]} {incr i} {
-	set current_point [list [lindex [get_attribute $split_area_core point_list] $i]]
-	set next_point [list [lindex [get_attribute $split_area_core point_list] [expr 1+$i]]]
-	if {$i == [expr [llength [get_attribute $split_area_core point_list]]-1]} {
-	    set next_point [list [lindex [get_attribute $split_area_core point_list] 0]] ;
-	}
-	set split_objects [get_shapes -intersect $split_area_core -filter layer.name==M0&&shape_use==stripe&&valid_for_cut] ;# M0 objects to split
-	split_objects $split_objects -line "$current_point $next_point"
-    }
-    
-    
-    set shape2remove [get_shapes -intersect  $split_area_core -filter layer_name==M0&&length==0.216&&valid_for_cut -quiet] ;# remove M0 shapes from vertical block sides
-    if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
-    set shape2remove [get_shapes -intersect  [get_attribute [get_blocks $top_design] boundary] -filter layer_name==M0&&width==0.027&&valid_for_cut -quiet] ;#remove M0 shapes from horizontal block sides
-    if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
-    
-    #removing M0 shapes between split core to block die area
-    set peripherial_polygon [compute_polygons -objects1 [get_attribute [get_blocks $top_design] boundary] -objects2 $split_area_core -operation NOT ]
-    set shape2remove [ get_shapes -within $peripherial_polygon -filter layer_name==M0&&physical_status!=locked&&valid_for_cut -quiet ]; if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
+	reshape_objects -force -simple -keep_inside -cut [get_att $split_area_core point_list ] [get_shapes -intersect $split_area_core -filter layer.name==M0&&shape_use==stripe&&physical_status!=locked]
+    # Unnecessary in new shape cut method -set split_objects [get_shapes -intersect $split_area_core -filter layer.name==M0&&shape_use==stripe&&valid_for_cut] ;# M0 objects to split
+    # Unnecessary in new shape cut method -
+    # Unnecessary in new shape cut method -#in case of complex block shape , like L-shape or other, need to split by line
+    # Unnecessary in new shape cut method -for {set i 0} {$i< [llength [get_attribute $split_area_core point_list]]} {incr i} {
+	# Unnecessary in new shape cut method -	set current_point [list [lindex [get_attribute $split_area_core point_list] $i]]
+	# Unnecessary in new shape cut method -	set next_point [list [lindex [get_attribute $split_area_core point_list] [expr 1+$i]]]
+	# Unnecessary in new shape cut method -	if {$i == [expr [llength [get_attribute $split_area_core point_list]]-1]} {
+	# Unnecessary in new shape cut method -	    set next_point [list [lindex [get_attribute $split_area_core point_list] 0]] ;
+	# Unnecessary in new shape cut method -	}
+	# Unnecessary in new shape cut method -	set split_objects [get_shapes -intersect $split_area_core -filter layer.name==M0&&shape_use==stripe&&valid_for_cut] ;# M0 objects to split
+	# Unnecessary in new shape cut method -	split_objects $split_objects -line "$current_point $next_point"
+    # Unnecessary in new shape cut method -}
+    # Unnecessary in new shape cut method -
+    # Unnecessary in new shape cut method -set shape2remove [get_shapes -intersect  $split_area_core -filter layer_name==M0&&length==0.216&&valid_for_cut -quiet] ;# remove M0 shapes from vertical block sides
+    # Unnecessary in new shape cut method -append_to_collection shape2remove [get_shapes -intersect  [get_attribute [get_blocks $top_design] boundary] -filter layer_name==M0&&width==0.027&&valid_for_cut -quiet] ;#remove M0 shapes from horizontal block sides $tech_arr(M0,width) 
+    # Unnecessary in new shape cut method -if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
+    # Unnecessary in new shape cut method -
+    # Unnecessary in new shape cut method -#removing M0 shapes between split core to block die area
+    # Unnecessary in new shape cut method -set peripherial_polygon [compute_polygons -objects1 [get_attribute [get_blocks $top_design] boundary] -objects2 $split_area_core -operation NOT ]
+    # Unnecessary in new shape cut method -set shape2remove [ get_shapes -within $peripherial_polygon -filter layer_name==M0&&physical_status!=locked&&valid_for_cut -quiet ]; if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
     
     #shapes cleanup M1
-    set split_objects [get_shapes -intersect $split_area_core -filter layer.name==M1&&shape_use==stripe&&physical_status!=locked&&valid_for_cut] ;# M1 objects to split
-    
-    #in case of complex block shape , like L-shape or other, need to split by line
-    for {set i 0} {$i< [llength [get_attribute $split_area_core point_list]]} {incr i} {
-	set current_point [list [lindex [get_attribute $split_area_core point_list] $i]]
-	set next_point [list [lindex [get_attribute $split_area_core point_list] [expr 1+$i]]]
-	if {$i == [expr [llength [get_attribute $split_area_core point_list]]-1]} {
-	    set next_point [list [lindex [get_attribute $split_area_core point_list] 0]] ;
-	}
-	split_objects $split_objects -line "$current_point $next_point"
-    }
-    
-    set shape2remove [get_shapes -intersect  $split_area_core -filter layer_name==M1&&length==0.1430&&physical_status!=locked&&valid_for_cut -quiet] ;# remove M1 shapes from vertical block sides
-    if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
-    set shape2remove [get_shapes -intersect  [get_attribute [get_blocks $top_design] boundary] -filter layer_name==M1&&width==0.028&&physical_status!=locked&&valid_for_cut -quiet] ;#remove M1 shapes from horizontal block sides
-    if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
+	reshape_objects -force -simple -keep_inside -cut [get_att $split_area_core point_list ] [get_shapes -intersect $split_area_core -filter layer.name==M1&&shape_use==stripe&&physical_status!=locked]
+	set via1to4in [get_vias -within $split_area_core -filter "(lower_layer.name==M0 || lower_layer.name==M1 || lower_layer.name==M2 || lower_layer.name==M3 || lower_layer.name==M4) && shape_use==stripe && physical_status!=locked"]
+	set via1to4all [get_vias -filter "(lower_layer.name==M0 || lower_layer.name==M1 || lower_layer.name==M2 || lower_layer.name==M3 || lower_layer.name==M4) && shape_use==stripe&&physical_status!=locked"]
+	remove_vias -force -verbose [remove_from_collection $via1to4all $via1to4in]
+    # Unnecessaary in new shape cut method -set split_objects [get_shapes -intersect $split_area_core -filter layer.name==M1&&shape_use==stripe&&physical_status!=locked] ;# M1 objects to split &&valid_for_cut
+    # Unnecessaary in new shape cut method -#in case of complex block shape , like L-shape or other, need to split by line
+    # Unnecessaary in new shape cut method -for {set i 0} {$i< [llength [get_attribute $split_area_core point_list]]} {incr i} {
+	# Unnecessaary in new shape cut method -	set current_point [list [lindex [get_attribute $split_area_core point_list] $i]]
+	# Unnecessaary in new shape cut method -	set next_point [list [lindex [get_attribute $split_area_core point_list] [expr 1+$i]]]
+	# Unnecessaary in new shape cut method -	if {$i == [expr [llength [get_attribute $split_area_core point_list]]-1]} {
+	# Unnecessaary in new shape cut method -	    set next_point [list [lindex [get_attribute $split_area_core point_list] 0]] ;
+	# Unnecessaary in new shape cut method -	}
+	# Unnecessaary in new shape cut method -	split_objects $split_objects -line "$current_point $next_point"
+    # Unnecessaary in new shape cut method -}
+    # Unnecessaary in new shape cut method -
+    # Unnecessaary in new shape cut method -set shape2remove [get_shapes -intersect  $split_area_core -filter layer_name==M1&&length==0.1430&&physical_status!=locked&&valid_for_cut -quiet] ;# remove M1 shapes from vertical block sides
+	# Unnecessaary in new shape cut method -append_to_collection  shape2remove [get_shapes -intersect  [get_attribute [get_blocks $top_design] boundary] -filter layer_name==M1&&width==0.028&&physical_status!=locked&&valid_for_cut -quiet] ;#remove M1 shapes from horizontal block sides
+    # Unnecessaary in new shape cut method -if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
 
     # shapes cleanup M5
     if {$run_clean_m5_VIA5_m6_VIA6_from_block_boundary} {
-
-	set split_objects [get_shapes -intersect $split_area_m5 -filter layer.name==M5&&width==0.02&&shape_use==stripe&&physical_status!=locked&&valid_for_cut] ;# M5 objects to split
-    
-	#in case of complex block shape , like L-shape or other, need to split by line
-	for {set i 0} {$i< [llength [get_attribute $split_area_m5 point_list]]} {incr i} {
-	    set current_point [list [lindex [get_attribute $split_area_m5 point_list] $i]]
-	    set next_point [list [lindex [get_attribute $split_area_m5 point_list] [expr 1+$i]]]
-	    if {$i == [expr [llength [get_attribute $split_area_m5 point_list]]-1]} {
-		set next_point [list [lindex [get_attribute $split_area_m5 point_list] 0]] ;
-	    }
-	    split_objects $split_objects -line "$current_point $next_point"
+		reshape_objects -force -simple -keep_inside -cut [get_att $split_area_m5 point_list ] [get_shapes -intersect $split_area_m5 -filter layer.name==M5&&width==0.02&&shape_use==stripe&&physical_status!=locked]
+		set via5in [get_vias -within $split_area_core -filter "(lower_layer.name==M6 || upper_layer.name==M6) && shape_use==stripe && physical_status!=locked"]
+		set via5all [get_vias -filter "(lower_layer.name==M6 || upper_layer.name==M6) && shape_use==stripe && physical_status!=locked"]
+		remove_vias -force -verbose [remove_from_collection $via5all $via5in]
+		# Unnecessary in new cut method -set split_objects [get_shapes -intersect $split_area_m5 -filter layer.name==M5&&width==0.02&&shape_use==stripe&&physical_status!=locked&&valid_for_cut] ;# M5 objects to split
+    	# Unnecessary in new cut method -
+		# Unnecessary in new cut method -#in case of complex block shape , like L-shape or other, need to split by line
+		# Unnecessary in new cut method -for {set i 0} {$i< [llength [get_attribute $split_area_m5 point_list]]} {incr i} {
+		# Unnecessary in new cut method -    set current_point [list [lindex [get_attribute $split_area_m5 point_list] $i]]
+		# Unnecessary in new cut method -    set next_point [list [lindex [get_attribute $split_area_m5 point_list] [expr 1+$i]]]
+		# Unnecessary in new cut method -    if {$i == [expr [llength [get_attribute $split_area_m5 point_list]]-1]} {
+		# Unnecessary in new cut method -		set next_point [list [lindex [get_attribute $split_area_m5 point_list] 0]] ;
+		# Unnecessary in new cut method -    }
+		# Unnecessary in new cut method -    split_objects $split_objects -line "$current_point $next_point"
+		# Unnecessary in new cut method -}
+		# Unnecessary in new cut method -
+		# Unnecessary in new cut method -set shape2remove [get_shapes -intersect  $split_area_m5 -filter layer_name==M5&&length==0.0845&&physical_status!=locked&&valid_for_cut -quiet] ;# remove M5 shapes from vertical block sides
+		# Unnecessary in new cut method -append_to_collection shape2remove [get_shapes -intersect  $split_area_die -filter layer_name==M5&&width==0.02&&physical_status!=locked&&valid_for_cut -quiet] ;# remove M5 shapes intersection die boundary
+		# Unnecessary in new cut method -if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove} 
+		# Unnecessary in new cut method -
+		# Unnecessary in new cut method -#removing M5 shapes between split core to block die area
+		# Unnecessary in new cut method -set peripherial_polygon [compute_polygons -objects1 [get_attribute [get_blocks $top_design] boundary] -objects2 $split_area_core -operation NOT ]
+		# Unnecessary in new cut method -set shape2remove [ get_shapes -within $peripherial_polygon -filter layer_name==M5&&width==0.02&&physical_status!=locked&&valid_for_cut -quiet ]
+		# Unnecessary in new cut method -if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
 	}
 	
-	set shape2remove [get_shapes -intersect  $split_area_m5 -filter layer_name==M5&&length==0.0845&&physical_status!=locked&&valid_for_cut -quiet] ;# remove M5 shapes from vertical block sides
-	if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
-	set shape2remove [get_shapes -intersect  $split_area_die -filter layer_name==M5&&width==0.02&&physical_status!=locked&&valid_for_cut -quiet] ;# remove M5 shapes intersection die boundary
-	if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove} 
+    # Unnecessary, done above in new method -# removing VIA0,VIA1vias between split core to block die area
+    # Unnecessary, done above in new method -set peripherial_polygon [compute_polygons -objects1 [get_attribute [get_blocks $top_design] boundary] -objects2 $split_area_core -operation NOT ]
+    # Unnecessary, done above in new method -set via2remove [ get_vias -within $peripherial_polygon -filter lower_layer_name==M0&&physical_status!=locked&&valid_for_cut -quiet ]
+    # Unnecessary, done above in new method -append_to_collection via2remove [ get_vias -within $peripherial_polygon -filter lower_layer_name==M1&&valid_for_cut -quiet ] 
+    # Unnecessary, done above in new method -append_to_collection via2remove [ get_vias -intersect $peripherial_polygon -filter lower_layer_name==M1&&valid_for_cut -quiet ]
 	
-	#removing M5 shapes between split core to block die area
-	set peripherial_polygon [compute_polygons -objects1 [get_attribute [get_blocks $top_design] boundary] -objects2 $split_area_core -operation NOT ]
-	set shape2remove [ get_shapes -within $peripherial_polygon -filter layer_name==M5&&width==0.02&&physical_status!=locked&&valid_for_cut -quiet ]; if {[sizeof_collection $shape2remove]} {remove_shapes $shape2remove}
-    }
+    # Unnecessary, done above in new method -# removing VIA2,VIA3,VIA4 vias that intersect block die area 
+    # Unnecessary, done above in new method -append_to_collection via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M2&&valid_for_cut -quiet ];
+    # Unnecessary, done above in new method -append_to_collection via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M3&&valid_for_cut -quiet ];
+    # Unnecessary, done above in new method -append_to_collection via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M4&&valid_for_cut -quiet ];
     
-    
-    # removing VIA0,VIA1vias between split core to block die area
-    set peripherial_polygon [compute_polygons -objects1 [get_attribute [get_blocks $top_design] boundary] -objects2 $split_area_core -operation NOT ]
-    set via2remove [ get_vias -within $peripherial_polygon -filter lower_layer_name==M0&&physical_status!=locked&&valid_for_cut -quiet ]; if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-    set via2remove [ get_vias -within $peripherial_polygon -filter lower_layer_name==M1&&valid_for_cut -quiet ]; if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-    set via2remove [ get_vias -intersect $peripherial_polygon -filter lower_layer_name==M1&&valid_for_cut -quiet ]; if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-
-    # removing VIA2,VIA3,VIA4 vias that intersect block die area 
-    set via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M2&&valid_for_cut -quiet ];
-    if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-    set via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M3&&valid_for_cut -quiet ];
-    if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-    set via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M4&&valid_for_cut -quiet ];
-    if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-
-    if {$run_clean_m5_VIA5_m6_VIA6_from_block_boundary} {
-	set via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M5&&valid_for_cut -quiet ];
-	if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-	set via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M6&&valid_for_cut -quiet ];
-	if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
-    }
+    # Unnecessary, done above in new method -if {$run_clean_m5_VIA5_m6_VIA6_from_block_boundary} {
+	# Unnecessary, done above in new method -	append_to_collection via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M5&&valid_for_cut -quiet ];
+	# Unnecessary, done above in new method -	append_to_collection via2remove [ get_vias -intersect [get_attribute [get_blocks $top_design] boundary] -filter lower_layer_name==M6&&valid_for_cut -quiet ];
+    # Unnecessary, done above in new method -}
+	# Unnecessary, done above in new method -if {[sizeof_collection $via2remove]} {remove_vias $via2remove}
 } ;# end clean_pg_around_die_auto
 
 
@@ -990,9 +995,7 @@ proc overide_pg_mesh_locally {} {
     set_app_option -name shell.undo.enabled -value false
     
     read_def ./scripts/layout/brcm3_pg_via.def
-    #    source -echo -verbose /project/foundry/TSMC/N3/BRCM/PDK/20241007/Synopsys/19M_1xa1xb1xc1xd1ya1yb6y2yy2yx2r_R_enterprise_MH143.extra_vias_for_iccii.tcl
-    source -echo -verbose /bespace/users/moshela/nextflow/be_work/brcm3/clk_wrapper_test/work4/pnr/19M_1xa1xb1xc1xd1ya1yb6y2yy2yx2r_R_enterprise_MH143.extra_vias_for_iccii.tcl
-
+    #source -echo -verbose /project/foundry/TSMC/N3/BRCM/PDK/20241007/Synopsys/19M_1xa1xb1xc1xd1ya1yb6y2yy2yx2r_R_enterprise_MH143.extra_vias_for_iccii.tcl
     source -echo -verbose $local_pg_generation_script
     
     set_app_option -name shell.undo.enabled -value false
