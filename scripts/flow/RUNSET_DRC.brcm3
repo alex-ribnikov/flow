@@ -1,0 +1,26 @@
+
+LAYOUT PATH "GDSFILENAME" MAG AUTO
+LAYOUT PRIMARY "TOPCELLNAME" 
+LAYOUT SYSTEM OASIS
+
+LAYOUT CELL LIST BCM_TOP_CELL "TOPCELLNAME"
+DRC RESULTS DATABASE TOPCELLNAME.drc ASCII
+DRC SUMMARY REPORT "TOPCELLNAME.sum" HIER
+DRC MAXIMUM RESULTS         5000
+
+
+#DEFINE CHECK_LOW_DENSITY   // Turn off to skip local low density and empty space check in cell level before dummy insertion 
+// #DEFINE WITH_APRDL          // Turn on if AP_RDL is applied
+// #DEFINE SHDMIM              // Turn on to check related MIM.AP.* rules
+// #DEFINE FULL_CHIP           // Turn on for chip level design
+
+//#define IP_TIGHTEN_BOUNDARY                              // Turn on to tighten empty space check around IP boundary to avoid empty space error after IP abutment
+//#define IP_TIGHTEN_DENSITY                               // Turn on to tighten local density check in IP/macro/block level
+//#define UseprBoundary                                    // Use prBoundary to set extent
+
+#DEFINE FRONT_END           // Turn on to check Front-End rules
+#DEFINE BACK_END            // Turn on to check Back-End rules
+
+include /project/foundry/TSMC/N3/BRCM/PDK/20250331/drc/top/drc/calibre.runset
+
+LAYOUT INPUT EXCEPTION SEVERITY MISSING_REFERENCE 1

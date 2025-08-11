@@ -1,0 +1,98 @@
+bundle contains 3 files:
+1. input_files.py
+2. run.py
+3. custom_scripts.py
+
+based on RHSC version 21R2.1 Python3 code.
+how to run:
+<install_path>/bin/redhawk_sc run.py
+
+Rev 1.0
+
+input_files.py:
+A. The user needs to change the data in the input files in all the marked locations.
+   the location will be marked with <>
+   I did left some numerical values as defaults in some locations, those should be taen as givens at    first, we can discuss the in depth later.
+B. The data is mainly devided into 3 sections:
+   * worker configs: in here user will control the grid command and worker related controls.
+   * EMIR flows and metrics control: most of the flow configs are set here, all PVT and signoff
+     controls are here.
+   * input data: in here user will pass all the input data related info, both global library configs, and specific design data such as def\spef\sta
+C. VCD section is still WIP
+
+custom_scripts.py:
+A. all custom scripts are documenetd for the user, and user can do help from whithin RHSC to check for data and defaults.
+
+run.py:
+A. user has flow controls in the start of the script:
+   run_reports = True : reports are generated after each flow
+   static = True : run static flow
+   dynamic_prop = True : run regular dynamic propagated flow
+   dynamic_pcvs = True : run dynamic power-constrained logic prop. power target is coming from
+                         static power
+   run_pgem = True : run DC powerEM
+   run_sigem = True : run DC,RMS,PEAK signalEM
+   bqm = True : run BQM gridcheck
+   run_vector = False : run Vector analysis. Please keep false until Rev1.1
+   check_via = True : perform missing via checks.
+   dvd_diagnostic = True : run DvD diagnostics for aggresor top aggresor lookup
+   r_eff = True : run Reff calculation
+B. by default the DB will be saved in run folder, user can set another location.
+C. rest of the file should be unchanged, we can discuss later on the parameters that are sent to reporting.
+
+few remarks:
+1. the dynamic analysis uses the same sliding-window approach the the Cisco flow had in the past
+2. memory control is based on randomiztion of modes from AVM file
+3. my configs are set for max accuracy and not best performance,
+   and they are inline with older Cisco flow
+4. tool is configured to perform full extraction (both pg and signal), runtime\memory impact is low, and added value is large.
+5. missing via check is basic, we can talk about how to enhance it to take into account more options that are design related.
+6. I have enabled both micro-resiliency and native view reloading support.
+7. I have added some extra log prints with informative data.
+8. regression runs were based on the tc_5nm_jul21 design you have shared
+9. I highky advise to read the help\appnotes to fully understand the controls I have used for accuracy.
+10. current flow is intended fo regular block level runs, it is not optimized for big fullchip runs,
+    the fullchip methodology will be addressed after a methodology decision.
+
+
+license needed:
+* technology license
+* sc_token licenses
+* worker licenses
+* sigEM license
+* redhawk_sc_apa: needed only for DvD Diagnostics and vector run
+*
+
+
+Rev 1.1
+
+Vlad - Added features:
+A. added support for CPM flow to generate the spice model of the die pg.
+   current CPM model creates single port per power domain.
+   if user wants to genrate NxNy model of CPM, pelase refer to the CPM appnote.
+B. added support for RMS and Peak powerEM,
+   this EM calcualtion is based on regular propagated dynamic run.
+
+licenses needed:
+* chip_power_model licenses for CPM flow.
+
+Rev 1.2
+
+Boris - Added features:
+A. AVM Checker - added data integrity report to check for Macros with missing AVMs
+   can be found under DI reports as - get_missing_avm.
+B. mvc - changed the bottom layer to be taken from occupied layers in dv.
+   bqm - check layer is also taken from dv. rather than being hardcoded "M0"
+
+
+licenses needed:
+* chip_power_model licenses for CPM flow.
+
+
+Rev1.3
+Vlad - Added feature:
+A. full vector flow ssupport:
+   * power-profiling vector flow support: uses worst power window for transient analysis.
+   * stress vector flow support: caclulated average activity from vector, and overrides all lower activities under a user defined threshold,
+     next takes those average TR's into a Vless analysis.
+B. minor bugs and flow corner cases

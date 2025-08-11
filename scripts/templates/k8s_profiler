@@ -1,0 +1,14 @@
+#STAGE CPU MEMORY
+syn 8 50
+floorplan 16 100
+place 16 100
+cts 16 150
+route 32 250
+chip_finish 16 100
+dummy 16 100
+eco 16 100
+starrc 8 100
+pt 32 200
+drc 16 100
+ant 16 100
+lvs 8 100

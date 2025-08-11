@@ -1,0 +1,125 @@
+exclude_rule -name "DBLK.EN.2.1" -obj [design_boundary] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.EN.2.1.CIP1}
+exclude_rule -name "DBLK.EN.2.2.1" -obj [design_boundary] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.EN.2.2.1.CIP1}
+exclude_rule -name "DBLK.EN.2.2.2" -obj [design_boundary] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.EN.2.2.2.CIP1}
+exclude_rule -name "DBLK.H210P51.S.2.1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.H210P51.S.2.1.CIP1}
+exclude_rule -name "DBLK.H210P51.S.2.2" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.H210P51.S.2.2.CIP1}
+exclude_rule -name "DBLK.S.5.1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5.1.CIP1}
+exclude_rule -name "DBLK.S.5.2" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5.2.CIP1}
+exclude_rule -name "DBLK.S.5.1.CIP1" -obj1 [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5G.1.CIP1}
+exclude_rule -name "DBLK.S.5.2.CIP1" -obj1 [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5G.2.CIP1}
+exclude_rule -name "DBLK.S.5G.1.CIP1" -obj1 [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5I.1.CIP1} -same_base_cell
+exclude_rule -name "DBLK.S.5G.2.CIP1" -obj1 [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5I.2.CIP1} -same_base_cell
+exclude_rule -name "DBLK.S.5I.1.CIP1" -obj1 [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5M.T.CIP1 DBLK.S.5M.B.CIP1} -same_base_cell -check_orientation mirror
+exclude_rule -name "DBLK.S.5I.2.CIP1" -obj1 [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -reason {DBLK.S.5M.L.CIP1 DBLK.S.5M.R.CIP1} -same_base_cell -check_orientation mirror
+
+set_width_rule -name "CORE.H210P51.W.1.1.1" -obj [available_sites] -type simple -direction vertical {on_grid(.width-2.1,0.42)}\
+	-description {Width of H210P51 STD cell region in vertical direction, if both side of STD cell region do not touch {TSMC POR SRAM size 0.765um in horizontal direction} = 2.100+0.420*n um}
+set_width_rule -name "CORE.H210P51.W.2.1" -obj [available_sites] -type incorner -direction vertical {on_grid(.width-0.84,0.42)}\
+	-description {Vertical edge length of H210P51 STD cell region between two consecutive 270-270 degree corners = 0.840+0.420*n um}
+set_width_rule -name "CORE.H210P51.W.3.1" -obj [available_sites] -type jog -direction vertical {on_grid(.width-0.42,0.42)}\
+	-description {Vertical edge length of H210P51 STD cell region between two consecutive 90-270 degree corners = 0.420+0.420*n um}
+set_width_rule -name "CORE.H210P51.W.1.2" -obj [available_sites] -type simple -direction horizontal {on_grid(.width-3.621,0.102)}\
+	-description {Width of H210P51 STD cell region in horizontal direction = 3.621+0.102*n um}
+set_width_rule -name "CORE.H210P51.W.2.2" -obj [available_sites] -type incorner -direction horizontal {on_grid(.width-0.969,0.102)}\
+	-description {Horizontal edge length of H210P51 STD cell region between two consecutive 270-270 degree corners = 0.969+0.102*n um}
+set_width_rule -name "CORE.H210P51.W.3.2" -obj [available_sites] -type jog -direction horizontal {on_grid(.width-1.02,0.102)}\
+	-description {Horizontal edge length of H210P51 STD cell region between two consecutive 90-270 degree corners = 1.020+0.102*n um}
+set_width_rule -name "CORE.H210P51.W.4.2" -obj [available_sites] -type concave -direction horizontal {on_grid(.width-3.621,0.102)}\
+	-description {Concave corner to concave corner width of H210P51 STD cell region in horizontal direction = 3.621+0.102*n um}
+set_width_rule -name "DBLK.H210P51.W.1.2:ALP76" -obj [design_boundary] -type simple -direction horizontal {on_grid(.width-3.825,3.876)}\
+	-description {Width of H210P51 APR Block in horizontal direction = 3.825+3.876*n um}
+set_width_rule -name "DBLK.H210P51.W.2.2:ALP76" -obj [design_boundary] -type incorner -direction horizontal {on_grid(.width-3.927,3.876)}\
+	-description {Horizontal edge length of H210P51 APR block between two consecutive 270-270 degree corners = 3.927+3.876*n um}
+set_width_rule -name "DBLK.H210P51.W.3.2:ALP76" -obj [design_boundary] -type jog -direction horizontal {on_grid(.width-3.876,3.876)}\
+	-description {Horizontal edge length of H210P51 APR block between two consecutive 90-270 degree corners = 3.876+3.876*n um}
+set_width_rule -name "DBLK.H210P51.W.1.1:FG28_ALP76" -obj [design_boundary] -type simple -direction vertical {on_grid(.width-0,0.532)}\
+	-description {Width of H210P51 APR Block with Fin Grid 28nm in vertical direction = 0.532*n um}
+set_width_rule -name "DBLK.H210P51.W.2.1:FG28_ALP76" -obj [design_boundary] -type incorner -direction vertical {on_grid(.width-0,0.532)}\
+	-description {Vertical edge length of H210P51 APR Block with Fin Grid 28nm between two consecutive 270-270 degree corners = 0.532*n um}
+set_width_rule -name "DBLK.H210P51.W.3.1:FG28_ALP76" -obj [design_boundary] -type jog -direction vertical {on_grid(.width-0,0.532)}\
+	-description {Vertical edge length of H210P51 APR Block with Fin Grid 28nm between two consecutive 90-270 degree corners = 0.532*n um}
+set_spacing_rule -enclosure -name "DBLK.H210P51.EN.1.1:ALP76" -obj [design_boundary] -ref [available_sites] -direction vertical {(on_grid(.spacing-0.84,0.42) || (.spacing in {0}))}\
+	-description {In H210P51 APR block, Block edge enclosure H210P51 STD cell region in vertical direction = 0, 0.840+0.420*n um}
+set_spacing_rule -enclosure -name "DBLK.H210P51.EN.1.2:BC" -obj [design_boundary] -ref [available_sites] -direction horizontal {(on_grid(.spacing-0.714,0.102) || (.spacing in {0}))}\
+	-description {In Boundary Controlled H210P51 APR block, Block edge enclosure H210P51 STD cell region in horizontal direction = 0,0.714+0.102*n um}
+set_spacing_rule -enclosure -name "DBLK.EN.2.1" -obj [design_boundary] -ref [macros] -direction vertical {on_grid(.spacing-0.56,0.028)}\
+	-description {Block edge enclosure Macro in vertical direction = 0.560+0.028*n um}
+set_spacing_rule -enclosure -name "DBLK.EN.2.2.1" -obj [design_boundary] -ref [macros] -direction left {on_grid(.spacing-0.714,0.102)}\
+	-description {Block edge enclosure Left edge of Macro in horizontal direction = 0.714+0.102*n um}
+set_spacing_rule -enclosure -name "DBLK.EN.2.2.2" -obj [design_boundary] -ref [macros] -direction right {(.spacing >= 0.714)}\
+	-description {Block edge enclosure Right edge of Macro in horizontal direction >= 0.714 um}
+set_track_rule -name "DBLK.H210P51.EN.5.1.M2" -layer M2 -mask {1} -direction horizontal -origin core -grid 0.07 -offset {0}\
+	-description {In H210P51 APR block, Core enclosure horizontal M2CA track in vertical direction = 0.070*n um}
+set_track_rule -name "DBLK.H210P51.EN.5.2.M1" -layer M1 -mask {2} -direction vertical -origin design -grid 0.068 -offset {0.0085}\
+	-description {In H210P51 APR block, Block boundary enclosure vertical M1CB track in horizontal direction = 0.0085+0.068*n um}
+set_track_rule -name "DBLK.EN.5.1.M6:ALP76" -layer M6 -direction horizontal -origin design -grid 0.076 -offset {0}\
+	-description {Block boundary enclosure horizontal M6 track in vertical direction = 0.076*n um}
+set_track_rule -name "DBLK.EN.5.1.M8:ALP76" -layer M8 -direction horizontal -origin design -grid 0.076 -offset {0}\
+	-description {Block boundary enclosure horizontal M8 track in vertical direction = 0.076*n um}
+set_track_rule -name "DBLK.EN.5.1.M10:ALP76" -layer M10 -direction horizontal -origin design -grid 0.076 -offset {0}\
+	-description {Block boundary enclosure horizontal M10 track in vertical direction = 0.076*n um}
+set_track_rule -name "DBLK.EN.5.2.M5:ALP76" -layer M5 -direction vertical -origin design -grid 0.076 -offset {0.0505}\
+	-description {Block boundary enclosure vertical M5 track in horizontal direction = 0.0505+0.076*n um}
+set_track_rule -name "DBLK.EN.5.2.M7:ALP76" -layer M7 -direction vertical -origin design -grid 0.076 -offset {0.0505}\
+	-description {Block boundary enclosure vertical M7 track in horizontal direction = 0.0505+0.076*n um}
+set_track_rule -name "DBLK.EN.5.2.M9:ALP76" -layer M9 -direction vertical -origin design -grid 0.076 -offset {0.0505}\
+	-description {Block boundary enclosure vertical M9 track in horizontal direction = 0.0505+0.076*n um}
+set_spacing_rule -name "DBLK.H210P51.S.1.1" -obj [available_sites] -ref [available_sites] -direction vertical -parallel_run_length -0.663 {(on_grid(.spacing-0.84,0.028) || (.spacing in {0}))}\
+	-description {Spacing of H210P51 STD cell region in vertical direction (PRL>=-0.663um) = 0, 0.840+0.028*n um}
+set_spacing_rule -name "DBLK.H210P51.S.1.2" -obj [available_sites] -ref [available_sites] -direction horizontal -parallel_run_length -0.84 {(on_grid(.spacing-0.663,0.102) || (.spacing in {0.051}))}\
+	-description {Spacing of H210P51 STD cell region in horizontal direction (PRL>=-0.84um) = 0.051, 0.663+0.102*n um}
+set_spacing_rule -name "DBLK.H210P51.S.2.1" -obj [macros] -ref [available_sites] -direction vertical -parallel_run_length -0.6625 {on_grid(.spacing-0.56,0.028)}\
+	-description {Macro to H210P51 STD cell region spacing in vertical direction (PRL>-0.663um) = 0.560+0.028*n um}
+set_spacing_rule -name "DBLK.H210P51.S.2.2" -obj [macros] -ref [available_sites] -direction horizontal -parallel_run_length -0.5595 {(.spacing >= 0.663)}\
+	-description {Macro to H210P51 STD cell region spacing in horizontal direction (PRL>-0.560um) >= 0.663 um}
+set_spacing_rule -name "DBLK.S.5.1" -obj [macros] -ref [macros] -direction vertical -parallel_run_length -0.6625 {on_grid(.spacing-0.56,0.028)}\
+	-description {Spacing from Macro to Macro in vertical direction (PRL>-0.663um) = 0.560+0.028*n um}
+set_spacing_rule -name "DBLK.S.5.2" -obj [macros] -ref [macros] -direction horizontal -parallel_run_length -0.5595 {(.spacing >= 0.663)}\
+	-description {Spacing from Macro to Macro in horizontal direction (PRL>-0.560um) >= 0.663 um}
+set_halo_rule -name "DBLK.H210P51.R.8.3:BC" -obj [available_sites] -ref [macros] -type inner -side all -detect_ref_enclosed {(.halo >= 0)}\
+	-description {In Boundary Controlled H210P51 APR block, macro, TSMC SRAM and APR block w/o Boundary Controlled must be surrounded by H210P51 STD cell region   }
+set_white_area_extension_rule -name "WHITESPACE.1" -obj [available_sites] -direction horizontal -size 0.0255\
+	-description {set_white_space_object_extension -class useful_site -extend_side horizontal -extension 0.0255}
+set_spacing_rule -name "DBLK.H210P51.R.5" -obj [white_area] -ref [white_area] -direction horizontal -parallel_run_length -0.001 {(.spacing >= 0.001)}\
+	-description {Forbid point touch (horizontal spacing 0.051 um, PRL =0 ) of 2 H210P51 STD cell region, or Boundary Controlled H210P51 APR Block, except 4 point touch (tCIC check spacing of Checked_Empty_Area_H210P51 >= 0.001 um, PRL >= -0.001 um )  }
+set_spacing_rule -enclosure -name "DBLK.H210P51.R.8.1:BC" -obj [design_boundary] -ref [white_area] -direction vertical {(.spacing >= 0.0005)}\
+	-description {In Boundary Controlled H210P51 APR block, empty area cannot touch horizontal block edges (Rule checks block enclosure Checked_Empty_Area_H210P51 in vertical direction >0) Definition of Checked_Empty_Area_H210P51: Checked_Empty_Area_H210P51 = Block NOT { { { H210P51 STD cell region OR Boundary Controlled H210P51 APR Block } size 0.0255 in horizontal direction} OR Macro }  }
+set_spacing_rule -enclosure -name "DBLK.H210P51.R.8.2:BC" -obj [design_boundary] -ref [white_area] -direction horizontal {(.spacing >= 0.0005)}\
+	-description {In Boundary Controlled H210P51 APR block, empty area cannot touch vertical block edges (Rule checks block enclosure Checked_Empty_Area_H210P51 in horizontal direction >0) Definition of Checked_Empty_Area_H210P51: Please refer to DBLK.H210P51.R.8.1:BC  }
+set_spacing_rule -name "DBLK.LUP.R.2_LUP_015U" -obj [available_sites] -ref [markers LUP_015U] -no_overlap -direction all {(.spacing >= 0)}\
+	-description {Forbid STD Cell Region overlap with following LUP marker layers: LUP_015U  }
+set_spacing_rule -name "DBLK.LUP.R.2_LUP_015U_P" -obj [available_sites] -ref [markers LUP_015U_P] -no_overlap -direction all {(.spacing >= 0)}\
+	-description {Forbid STD Cell Region overlap with following LUP marker layers: LUP_015U_P  }
+set_spacing_rule -name "DBLK.LUP.R.2_LUP_015U_N" -obj [available_sites] -ref [markers LUP_015U_N] -no_overlap -direction all {(.spacing >= 0)}\
+	-description {Forbid STD Cell Region overlap with following LUP marker layers: LUP_015U_N  }
+set_spacing_rule -enclosure -name "DBLK.EN.2.1.CIP1" -obj [design_boundary] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction vertical {((.spacing >= 0.56) || (.spacing in { 0.56}))}\
+	-description {BOUNDARY_ALL enclosure CUSTOMIZE_IP1 in vertical direction = EN_2_1_CIP1_WL, EN_2_1_CIP1_OFF+EN_2_1_CIP1_GRID*n um}
+set_spacing_rule -enclosure -name "DBLK.EN.2.2.1.CIP1" -obj [design_boundary] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction left {(on_grid(.spacing-0.714,0.102) || (.spacing in { 0.714}))}\
+	-description {BOUNDARY_ALL enclosure left edge of CUSTOMIZE_IP1 in horizontal direction = EN_2_2_1_CIP1_WL, EN_2_2_1_CIP1_OFF+EN_2_2_1_CIP1_GRID*n um}
+set_spacing_rule -enclosure -name "DBLK.EN.2.2.2.CIP1" -obj [design_boundary] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction right {((.spacing >= 0.714) || (.spacing in { 0.714}))}\
+	-description {BOUNDARY_ALL enclosure right edge of CUSTOMIZE_IP1 in horizontal direction = EN_2_2_2_CIP1_WL, >=EN_2_2_2_CIP1_MIN um}
+set_spacing_rule -name "DBLK.H210P51.S.2.1.CIP1" -ref [available_sites] -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction vertical -parallel_run_length -0.6625 {((.spacing >= 0.56) || (.spacing in { 0.56}))}\
+	-description {CUSTOMIZE_IP1 to H210P51 STD cell region spacing in vertical direction (PRL>= H210P51_S_2_1_CIP1_PRL um) = H210P51_S_2_1_CIP1_WL, >=H210P51_S_2_1_CIP1_MIN um}
+set_spacing_rule -name "DBLK.H210P51.S.2.2.CIP1" -ref [available_sites] -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction horizontal -parallel_run_length -0.5595 {((.spacing >= 0.663) || (.spacing in { 0.663}))}\
+	-description {CUSTOMIZE_IP1 to H210P51 STD cell region spacing in horizontal direction (PRL>=H210P51_S_2_2_CIP1_PRL um) = H210P51_S_2_2_CIP1_WL, >=H210P51_S_2_2_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5.1.CIP1" -ref [macros] -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction vertical -parallel_run_length -0.6625 {((.spacing >= 0.56) || (.spacing in { 0.56}))}\
+	-description {Spacing from CUSTOMIZE_IP1 to MACRO in vertical direction (PRL>= S_5_1_CIP1_PRL um) = S_5_1_CIP1_WL, >=S_5_1_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5.2.CIP1" -ref [macros] -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction horizontal -parallel_run_length -0.5595 {((.spacing >= 0.663) || (.spacing in { 0.663}))}\
+	-description {Spacing from CUSTOMIZE_IP1 to MACRO in horizontal direction (PRL>= S_5_2_CIP1_PRL um) = S_5_2_CIP1_WL, >=S_5_2_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5G.1.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction vertical -parallel_run_length -0.6625 {((.spacing >= 0.56) || (.spacing in {}))}\
+	-description {Spacing of CUSTOMIZE_IP1 in vertical direction (PRL>= S_5G_1_CIP1_PRL um), except two CUSTOMIZE_IP1 are identical and placed in mirror direction = S_5G_1_CIP1_WL, >=S_5G_1_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5G.2.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction horizontal -parallel_run_length -0.5595 {((.spacing >= 0.663) || (.spacing in {}))}\
+	-description {Spacing of CUSTOMIZE_IP1 in horizontal direction (PRL>= S_5G_2_CIP1_PRL um), except two CUSTOMIZE_IP1 are identical and placed in mirror direction = S_5G_2_CIP1_WL, >=S_5G_2_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5I.1.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction vertical -parallel_run_length -0.6625 {((.spacing >= 0.56) || (.spacing in {}))} -same_base_cell -check_orientation none\
+	-description {Spacing of CUSTOMIZE_IP1 in vertical direction (PRL>= S_5I_1_CIP1_PRL um) , when two CUSTOMIZE_IP1 are identical, except two CUSTOMIZE_IP1 are placed in mirror direction = S_5I_1_CIP1_WL, >=S_5I_1_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5I.2.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction horizontal -parallel_run_length -0.5595 {((.spacing >= 0.663) || (.spacing in {}))} -same_base_cell -check_orientation none\
+	-description {Spacing of CUSTOMIZE_IP1 in horizontal direction (PRL>= S_5I_2_CIP1_PRL um), when two CUSTOMIZE_IP1 are identical, except two CUSTOMIZE_IP1 are placed in mirror direction = S_5I_2_CIP1_WL, >=S_5I_2_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5M.T.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction top -parallel_run_length -0.6625 {((.spacing >= 0.56) || (.spacing in {}))} -same_base_cell -check_orientation mirror\
+	-description {Spacing of top edge of CUSTOMIZE_IP1 in vertical direction (PRL>= S_5M_T_CIP1_PRL um), when two CUSTOMIZE_IP1 are identical and placed in mirror direction = S_5M_T_CIP1_WL, >=S_5M_T_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5M.B.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction bottom -parallel_run_length -0.6625 {((.spacing >= 0.56) || (.spacing in {}))} -same_base_cell -check_orientation mirror\
+	-description {Spacing of bottom edge of CUSTOMIZE_IP1 in vertical direction (PRL>= S_5M_B_CIP1_PRL um), when two CUSTOMIZE_IP1 are identical and placed in mirror direction = S_5M_B_CIP1_WL, >=S_5M_B_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5M.L.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction left -parallel_run_length -0.5595 {((.spacing >= 0.663) || (.spacing in {}))} -same_base_cell -check_orientation mirror\
+	-description {Spacing of left edge of CUSTOMIZE_IP1 in horizontal direction (PRL>= S_5M_L_CIP1_PRL um), when two CUSTOMIZE_IP1 are identical and placed in mirror direction = S_5M_L_CIP1_WL, >=S_5M_L_CIP1_MIN um}
+set_spacing_rule -name "DBLK.S.5M.R.CIP1" -obj [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -ref [base_cells sacrls0g4s2p128x136m1b2w0c0p0d0r1rm4rw10zh1h0ms0mg1 sacrls0g4s2p160x132m2b2w0c1p0d0r1rm4rw10zh1h0ms0mg1 saduls0g4s1p3136x156m8b2w0c1p0d0r2rm4rw11e18zh1h0ms0mg1] -direction right -parallel_run_length -0.5595 {((.spacing >= 0.663) || (.spacing in {}))} -same_base_cell -check_orientation mirror\
+	-description {Spacing of right edge of CUSTOMIZE_IP1 in horizontal direction (PRL>= S_5M_R_CIP1_PRL um), when two CUSTOMIZE_IP1 are identical and placed in mirror direction = S_5M_R_CIP1_WL, >=S_5M_R_CIP1_MIN um}
+

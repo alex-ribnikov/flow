@@ -1,0 +1,19 @@
+
+LAYOUT PATH "GDSFILENAME" MAG AUTO
+LAYOUT PRIMARY "TOPCELLNAME" 
+LAYOUT SYSTEM OASIS
+
+LAYOUT CELL LIST BCM_TOP_CELL "TOPCELLNAME"
+
+
+#DEFINE CHECK_LOW_DENSITY   // Turn off to skip local low density and empty space check in cell level before dummy insertion 
+// #DEFINE WITH_APRDL          // Turn on if AP_RDL is applied
+// #DEFINE SHDMIM              // Turn on to check related MIM.AP.* rules
+// #DEFINE FULL_CHIP           // Turn on for chip level design
+
+#DEFINE FRONT_END           // Turn on to check Front-End rules
+#DEFINE BACK_END            // Turn on to check Back-End rules
+
+include scripts/ruleset/tsmc5ff_M1_1Mx_1Mxb_1Mxe_1Mya_1Myb_5My_2Myy_2Myx_2Mr_1UTRDL.edrc.svrf
+
+LAYOUT INPUT EXCEPTION SEVERITY MISSING_REFERENCE 1

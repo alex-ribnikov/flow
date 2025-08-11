@@ -1,0 +1,8 @@
+-sverilog
+-timescale=1ns/1ps
+
+-f /services/bespace/users/ory/inext_grid_pn85.3_20220411_1027/gendir_genus_grid_quadrant/defines.list
+-f /services/bespace/users/ory/inext_grid_pn85.3_20220411_1027/gendir_genus_grid_quadrant/incdir.flist
+-f /services/bespace/users/ory/inext_grid_pn85.3_20220411_1027/gendir_genus_grid_quadrant/libdir.flist
+-f /services/bespace/users/ory/inext_grid_pn85.3_20220411_1027/gendir_genus_grid_quadrant/libfile.flist
+-f ../inter/srcfile.flist

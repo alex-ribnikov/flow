@@ -1,0 +1,2 @@
+set str "Your help text from run*.csh file (use debug print in file)"
+foreach line  [split $str "\n"] { set spline [split [string trim [regsub -all " +" $line " "] " "]  ";"] ; lassign $spline flag default help ; puts "parser.add_argument\(\'$flag\',\n[string repeat " " 21][format "%-10s" default]= \'$default\' ,\n[string repeat " " 21][format "%-10s" required]= 'false' ,\n[string repeat " " 21][format "%-10s" choices]= None ,\n[string repeat " " 21][format "%-10s" type]= None ,\n[string repeat " " 21][format "%-10s" help]= \'[regsub -all "\'" $help "\\'"]\'\)" }

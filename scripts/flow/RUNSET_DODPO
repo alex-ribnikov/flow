@@ -1,0 +1,20 @@
+
+LAYOUT PATH "GDSFILENAME"
+LAYOUT PRIMARY "TOPCELLNAME"
+LAYOUT SYSTEM OASIS
+DFM DEFAULTS RDB OASIS FILE "DODPO_TOPCELLNAME.oas" PREFIX DODPO_
+
+
+include scripts/ruleset/Dummy_FEOL_CalibreYE_5nm_014.12a
+
+
+// #DEFINE CHIPLET 
+
+
+#IFDEF CHIPLET
+   #DEFINE FILL_DM16                      // turn on to fill dummy M16  //If there is not any other metal type specified, it will be designed DM16/DVIA15 as DMx/DMx_O
+   #DEFINE FILL_DM17                      // turn on to fill dummy M17  //If there is not any other metal type specified, it will be designed DM17/DVIA16 as DMx/DMx_O
+#ENDIF
+
+
+LAYOUT INPUT EXCEPTION SEVERITY MISSING_REFERENCE 1

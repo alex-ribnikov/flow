@@ -1,0 +1,38 @@
+try:
+    dv_settings.keys()
+except:
+    dv_settings = {}
+if 'max_phantom_distance' not in dv_settings.keys():
+    dv_settings['max_phantom_distance'] = []
+
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X8','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X10','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X12','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X14','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X16','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X18','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X20','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X24','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X28','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X30','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X32','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X36','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X40','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X42','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X48','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X54','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X64','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X96','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X128','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X160','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X192','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X224','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X256','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X288','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X320','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X352','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X384','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X416','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X448','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X480','layers':[('*',0.35)]})
+dv_settings['max_phantom_distance'].append({'cells': 'F6*X512','layers':[('*',0.35)]})

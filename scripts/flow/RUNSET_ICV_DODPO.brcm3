@@ -1,0 +1,9 @@
+// #define FULL_CHIP                       // Turn on for chip level design; Turn off for IP/macro/cell level design
+// #define WITH_SEALRING                   // Turn on if sealring is assembed in chip 
+
+#define UseprBoundary         // Use layer prBoundary(108;0) to define the chip window
+
+// #define FILL_TCD                        // turn on to fill TCD pattern
+output_file_name   : string = "DODPO_TOPCELLNAME.oas";
+
+#include "./scripts/ruleset/Dummy_FEOL_ICV_3nm_E_19M_1Xa1Xb1Xc1Xd1Ya1Yb6Y2Yy2Yx2R_014.11_1a"

@@ -1,0 +1,180 @@
+%TAG ! tag:flow.stylus.cadence.com,0.1:
+---
+#############################################################################################
+# Flow  Setup
+#############################################################################################
+# Generated using: Flowkit v19.10-s009_1
+# Command: write_flow_template -type stylus -tools genus
+
+# Provide a memorable comment to describe this yaml file
+remarks:
+
+# Specify scripts that will be automatically sourced in all tools
+#   these scripts will be run every time each tool initializes
+include_scripts:
+
+# Specify scripts that define procs
+#   these are available during flow_step execution
+include_procs: 
+  - metric_procs.tcl
+  - procs.tcl
+
+#############################################################################################
+# Feature Definition
+#############################################################################################
+# +---------+-------------+----------+
+# | Feature | Description | Value    |
+# +---------+-------------+----------+
+# --- no features are optional
+# +---------+-------------+----------+
+define_feature:
+  dont_check_constant_0_1:
+    description: Don't check for flops that has been removed due to constant 0/1 propagation
+    type: bool
+  run_timing_reports:
+    description: perform timing checks after syn_generic, syn_map and syn_opt
+    type: bool
+  generate_mapped_netlist:
+    description: perform timing checks after syn_generic, syn_map and syn_opt
+    type: bool
+
+# Optional features in the above table can enabled below by adding them as space separated options
+#   eg: features: -report_inline -report_lec
+features:
+
+#############################################################################################
+# Flow Step Definitions
+#
+# default_flow_steps : Flow steps that come from the tool templates (write_flow_template)
+#                       DO NOT MODIFY
+# tech_flow_steps    : Technology dependent flow steps that are required to place, route and
+#                       optimize a DRC clean design
+# ip_flow_steps      : Flow steps for integrating IP
+# user_flow_steps    : Flow steps which require user modifications to replace PLACEHOLDER
+#                       content and fine tune the flow for specific needs
+#
+#############################################################################################
+default_flow_steps:
+  - flow/common_flows.tcl
+  - flow/common_steps.tcl
+  - flow/genus_steps.tcl
+
+tech_flow_steps:
+
+ip_flow_steps:
+
+user_flow_steps:
+  - design_config.tcl
+  - flow_config.tcl
+  - genus_config.tcl
+
+# Specify the flows that will be run, in order
+flow_current: synthesis
+
+#############################################################################################
+# General Flow Configuration
+#############################################################################################
+
+# Identify the simple design data yaml file to be used
+design_yaml:
+  - setup.yaml
+
+#############################################################################################
+# Flow Definitions
+#
+#  Common modifications are:
+#    1. comment out a step by adding in a '#', eg  #  - step_does_not_run:
+#    2. delete a line to remove the step
+#    3. reorder defined flow_steps and flows
+#    4. add a single command inline,           eg # CMD_<step_name>: <cmd>
+#    5. add file contents inline,              eg # FILE_<step_name>: <filename>
+#    6. change the parameters, see the comment at the end of each line
+#############################################################################################
+flows:
+
+#-------------------------------------------------------------------------------
+# synthesis
+#-------------------------------------------------------------------------------
+  synthesis:
+    args: -tool genus -owner cadence -skip_metric
+    steps:
+      - syn_generic:
+          steps:
+            - block_start:
+            - init_elaborate:
+            - init_design:
+              - read_mmmc:
+              - read_physical:
+              - read_hdl:
+              - run_init_design:
+            - gen_read_hdl_netlist_report:
+            - init_genus:
+            - apply_rtl2be_directives:
+            - update_submodule_names:
+            - write_elaborated_netlist:
+            - reload_timing_constraints:
+                enabled: "!generate_mapped_netlist"
+            - check_design:
+                enabled: "!generate_mapped_netlist"
+            - check_timing:
+                enabled: "!generate_mapped_netlist"
+            - report_logic_levels_histogram:
+                enabled: "!generate_mapped_netlist"
+            - report_net_loads:
+                enabled: "!generate_mapped_netlist"
+            - run_syn_generic:
+                enabled: "!dont_check_constant_0_1 || run_timing_reports || generate_mapped_netlist"
+            - check_sequential_deleted:
+                enabled: "!dont_check_constant_0_1 && !generate_mapped_netlist"
+            - report_late_paths:
+                enabled: "run_timing_reports && !generate_mapped_netlist"
+            - custom_metrics:
+                enabled: "!generate_mapped_netlist"
+            - report_area:
+            - report_feedthrough:    
+            - report_unsampled_ports:                
+            - report_logic_levels:
+            - report_flops:
+            - report_messages:
+            - gen_dummy_liberty:
+            - block_finish:
+            - write_metric_json:
+                enabled: "!generate_mapped_netlist"
+      - syn_map:
+          enabled: "run_timing_reports || generate_mapped_netlist"
+          steps:
+            - block_start:
+            - init_genus:
+            - run_syn_map:
+            - report_late_paths:
+                enabled: "!generate_mapped_netlist"
+            - generate_mapped_netlist:
+            - report_area:
+            - report_flops:
+            - report_unsampled_ports:                
+            - report_mbff:
+            - report_messages:
+            - block_finish:
+      - syn_opt:
+          enabled: "run_timing_reports"
+          steps:
+            - block_start:
+            - init_genus:
+            - run_syn_opt:
+            - report_late_paths:
+            - report_area:
+            - report_flops:
+            - report_unsampled_ports:                            
+            - report_mbff:
+            - report_messages:
+            - block_finish:
+
+#-------------------------------------------------------------------------------
+# init_genus
+#-------------------------------------------------------------------------------
+  init_genus:
+    args: -owner cadence -tool genus
+    steps:
+      - init_genus_yaml:
+      - init_genus_user:
+

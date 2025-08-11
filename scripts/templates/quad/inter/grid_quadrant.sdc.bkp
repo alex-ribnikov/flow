@@ -1,0 +1,177 @@
+if { ![info exists INST_NAME] } {
+     set INST_NAME ""
+     set fc 0
+     set s "/"
+     set ss "/"
+   } else {
+     set INST_NAME "${INST_NAME}/"
+     set fc 1
+   }
+
+if {[info exists ::env(PROJECT)] && ${::env(PROJECT)} == "brcm5" } {
+    set FF_DATA_OUT "q"
+} else {
+    set FF_DATA_OUT "Q"
+}
+
+# Define variable which identifies whether flow is at synopsys or cadence
+set synopsys  0
+if {[info exists ::synopsys_program_name]} {
+    set synopsys 1
+}
+
+######################
+# clocks_parameters.sdc
+# created by Yigal on Jun 2021
+
+# Clocks parameters 
+#
+set GRID_CLK_PERIOD 0.625
+set APB_CLK_PERIOD 2
+#
+set GRID_CLK_UNC 0.060
+set APB_CLK_UNC 0.18
+
+if { ![info exist TEV_OP_MODE] } {
+  set HOLD_UNCERTAINTY 0.01
+} elseif { [info exist TEV_OP_MODE] && $TEV_OP_MODE == "FF" } {
+  set HOLD_UNCERTAINTY 0.01
+} else {
+  set HOLD_UNCERTAINTY 0.025
+}
+
+#
+#set DC_SCALING 0.08 before Yigal's update.
+
+set UNC_SCALING 0
+if {([info exist ::synopsys_program_name] && $::synopsys_program_name eq "dc_shell") || ([info command is_common_ui_mode] ne "" && [get_db program_short_name] eq "genus")} {set UNC_SCALING 0.08}
+if {([info exist ::synopsys_program_name] && $::synopsys_program_name eq "icc_shell") || ([info command is_common_ui_mode] ne "" && [get_db program_short_name] eq "innovus")} {
+    if { ![info exist STAGE] } {
+        set UNC_SCALING 0.08
+    } elseif { $STAGE == "place" } {
+        set UNC_SCALING 0.08
+    } elseif { $STAGE == "cts" } {
+        set UNC_SCALING 0.06
+    } elseif { $STAGE == "route" } {
+        set UNC_SCALING 0.02
+    }
+}
+if {([info exist ::synopsys_program_name] && $::synopsys_program_name eq "dc_shell") || ([info command is_common_ui_mode] ne "" && [get_db program_short_name] eq "genus")} {
+set GRID_CLK_UNC     [expr ($GRID_CLK_UNC     + ($UNC_SCALING * $GRID_CLK_PERIOD))]
+set APB_CLK_UNC      [expr ($APB_CLK_UNC      + ($UNC_SCALING * $APB_CLK_PERIOD))]
+}
+
+######################
+# Clocks defintions 
+#
+create_clock -period $GRID_CLK_PERIOD     -name grid_clk             [get_ports grid_clk]
+create_clock -period $GRID_CLK_PERIOD     -name grid_clk_from_east_0 [get_ports grid_clk_from_east[0]]
+create_clock -period $GRID_CLK_PERIOD     -name grid_clk_from_east_1 [get_ports grid_clk_from_east[1]]
+create_clock -period $GRID_CLK_PERIOD     -name grid_clk_from_east_2 [get_ports grid_clk_from_east[2]]
+create_clock -period $GRID_CLK_PERIOD     -name grid_clk_from_east_3 [get_ports grid_clk_from_east[3]]
+
+# Virtual Clocks
+create_clock -period $GRID_CLK_PERIOD     -name virtual_grid_clk
+create_clock -period $GRID_CLK_PERIOD     -name virtual_grid_clk_from_east_0
+create_clock -period $GRID_CLK_PERIOD     -name virtual_grid_clk_from_east_1
+create_clock -period $GRID_CLK_PERIOD     -name virtual_grid_clk_from_east_2
+create_clock -period $GRID_CLK_PERIOD     -name virtual_grid_clk_from_east_3
+create_clock -period $APB_CLK_PERIOD      -name virtual_apb_clk
+
+
+# Uncertainty
+#
+set_clock_uncertainty -setup $GRID_CLK_UNC                -from [get_clocks {grid_clk}]   -to [get_clocks {grid_clk}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {grid_clk}]   -to [get_clocks {virtual_grid_clk}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {virtual_grid_clk}] -to [get_clocks {grid_clk}]
+set_clock_uncertainty -setup 0                            -from [get_clocks {virtual_grid_clk}] -to [get_clocks {virtual_grid_clk}]
+set_clock_uncertainty -setup $APB_CLK_UNC                 -from [get_clocks {virtual_apb_clk}] -to [get_clocks {virtual_apb_clk}]
+set_clock_uncertainty -setup $GRID_CLK_UNC                -from [get_clocks {grid_clk_from_east_0}]   -to [get_clocks {grid_clk_from_east_0}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {grid_clk_from_east_0}]   -to [get_clocks {virtual_grid_clk_from_east_0}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {virtual_grid_clk_from_east_0}] -to [get_clocks {grid_clk_from_east_0}]
+set_clock_uncertainty -setup 0                            -from [get_clocks {virtual_grid_clk_from_east_0}] -to [get_clocks {virtual_grid_clk_from_east_0}]
+set_clock_uncertainty -setup $GRID_CLK_UNC                -from [get_clocks {grid_clk_from_east_1}]   -to [get_clocks {grid_clk_from_east_1}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {grid_clk_from_east_1}]   -to [get_clocks {virtual_grid_clk_from_east_1}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {virtual_grid_clk_from_east_1}] -to [get_clocks {grid_clk_from_east_1}]
+set_clock_uncertainty -setup 0                            -from [get_clocks {virtual_grid_clk_from_east_1}] -to [get_clocks {virtual_grid_clk_from_east_1}]
+set_clock_uncertainty -setup $GRID_CLK_UNC                -from [get_clocks {grid_clk_from_east_2}]   -to [get_clocks {grid_clk_from_east_2}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {grid_clk_from_east_2}]   -to [get_clocks {virtual_grid_clk_from_east_2}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {virtual_grid_clk_from_east_2}] -to [get_clocks {grid_clk_from_east_2}]
+set_clock_uncertainty -setup 0                            -from [get_clocks {virtual_grid_clk_from_east_2}] -to [get_clocks {virtual_grid_clk_from_east_2}]
+set_clock_uncertainty -setup $GRID_CLK_UNC                -from [get_clocks {grid_clk_from_east_3}]   -to [get_clocks {grid_clk_from_east_3}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {grid_clk_from_east_3}]   -to [get_clocks {virtual_grid_clk_from_east_3}]
+set_clock_uncertainty -setup [expr ($GRID_CLK_UNC * 0.5)] -from [get_clocks {virtual_grid_clk_from_east_3}] -to [get_clocks {grid_clk_from_east_3}]
+set_clock_uncertainty -setup 0                            -from [get_clocks {virtual_grid_clk_from_east_3}] -to [get_clocks {virtual_grid_clk_from_east_3}]
+
+set_clock_uncertainty -hold  $HOLD_UNCERTAINTY [all_clocks]
+
+
+set_clock_groups -name MAIN_CLK  -asynchronous -group {grid_clk virtual_grid_clk grid_clk_from_east_0 virtual_grid_clk_from_east_0 \
+grid_clk_from_east_1 virtual_grid_clk_from_east_1 grid_clk_from_east_2 virtual_grid_clk_from_east_2 grid_clk_from_east_3 virtual_grid_clk_from_east_3 } -group {virtual_apb_clk}
+
+set_clock_groups -name MAIN1_CLK -asynchronous -group {grid_clk virtual_grid_clk} \
+-group {grid_clk_from_east_0 virtual_grid_clk_from_east_0 grid_clk_from_east_1 virtual_grid_clk_from_east_1 grid_clk_from_east_2 virtual_grid_clk_from_east_2 grid_clk_from_east_3 virtual_grid_clk_from_east_3 } -allow_path
+
+
+# Async reset signals
+#
+set_multicycle_path 3 -setup -from [get_ports *grid_rst_n* -filter "direction==in"] -start
+set_multicycle_path 3 -hold  -from [get_ports *grid_rst_n* -filter "direction==in"] -start
+
+# Tie Signals 
+#
+set_multicycle_path 3 -setup -from [get_ports *strap_* -filter "direction==in"] -start
+set_multicycle_path 3 -hold  -from [get_ports *strap_* -filter "direction==in"] -start
+
+# set functional mode
+# set functional mode iddq & scan_en
+if {[sizeof_collection [get_ports -quiet *scan_en*]] > 0} {
+  set_case_analysis 0 [get_ports {*scan_en*}]
+}
+if {[sizeof_collection [get_ports -quiet *shift_en*]] > 0} {
+  set_case_analysis 0 [get_ports {*shift_en*}]
+}
+if {[sizeof_collection [get_ports -quiet *dft_rst_n_override* -filter "direction==in"]] > 0} {
+  set_case_analysis 0 [get_ports *dft_rst_n_override* -filter "direction==in"]
+}
+
+
+
+# I/O Constraints
+#
+
+set clk_ports           [get_db [get_ports *grid_clk*] .name]
+set east_grid_clk_ports {nbus*ready*east* cbus*ready*east*}
+set apb_clk_ports       {*grid_rst_n* *strap_* *dft_rst_n_override*}
+set grid_clk_ports      [get_db [remove_from_collection [get_ports] [get_ports [concat $clk_ports $east_grid_clk_ports $apb_clk_ports]]] .name]
+
+
+#
+set_input_delay  [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk [get_ports $grid_clk_ports -filter "direction == in && full_name != *grid_clk"]
+set_output_delay [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk [get_ports $grid_clk_ports -filter "direction == out && full_name != *grid_clk"]
+#
+set_input_delay  [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_0 [get_ports $east_grid_clk_ports -filter "direction == in  && ( full_name=~*_r0 || full_name=~*_r1*)"]
+set_output_delay [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_0 [get_ports $east_grid_clk_ports -filter "direction == out && ( full_name=~*_r0 || full_name=~*_r1*)"]
+set_input_delay  [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_1 [get_ports $east_grid_clk_ports -filter "direction == in  && ( full_name=~*_r2 || full_name=~*_r3*)"]
+set_output_delay [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_1 [get_ports $east_grid_clk_ports -filter "direction == out && ( full_name=~*_r2 || full_name=~*_r3*)"]
+set_input_delay  [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_2 [get_ports $east_grid_clk_ports -filter "direction == in  && ( full_name=~*_r4 || full_name=~*_r5*)"]
+set_output_delay [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_2 [get_ports $east_grid_clk_ports -filter "direction == out && ( full_name=~*_r4 || full_name=~*_r5*)"]
+set_input_delay  [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_3 [get_ports $east_grid_clk_ports -filter "direction == in  && ( full_name=~*_r6 || full_name=~*_r7*)"]
+set_output_delay [expr ($GRID_CLK_PERIOD * 0.8)] -add  -clock virtual_grid_clk_from_east_3 [get_ports $east_grid_clk_ports -filter "direction == out && ( full_name=~*_r6 || full_name=~*_r7*)"]
+
+#
+set_input_delay  [expr ($APB_CLK_PERIOD * 0.1)] -clock virtual_apb_clk [get_ports $apb_clk_ports -filter "direction == in"]
+#
+
+# Transition and Load
+set_input_transition [expr ($GRID_CLK_PERIOD * 0.10)] [get_ports $grid_clk_ports -filter "direction == in"]
+set_input_transition [expr ($GRID_CLK_PERIOD * 0.10)] [get_ports $east_grid_clk_ports -filter "direction == in"]
+
+set_input_transition 0.2                              [get_ports $apb_clk_ports -filter "direction == in"]
+
+set_load 0.01 [all_outputs]
+
+
+
+
+

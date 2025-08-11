@@ -1,0 +1,18 @@
+
+LAYOUT PATH "GDSFILENAME" MAG AUTO
+LAYOUT PRIMARY "TOPCELLNAME" 
+LAYOUT SYSTEM OASIS
+
+//LAYOUT CELL LIST BCM_TOP_CELL "TOPCELLNAME"
+
+
+//#DEFINE UseprBoundary     // Turn on to specify chip boundary by prBoundary(108;0) layer
+//#DEFINE ChipWindowUsed    // Turn on to specify chip boundary directly by following variables
+DRC RESULTS DATABASE "TOPCELLNAME.err" ASCII
+DRC SUMMARY REPORT "TOPCELLNAME.sum" HIER
+
+
+include /project/foundry/TSMC/N3/BRCM/PDK/20250331/drc/top/packaging/TOPcalibre.runset
+
+
+LAYOUT INPUT EXCEPTION SEVERITY MISSING_REFERENCE 1
