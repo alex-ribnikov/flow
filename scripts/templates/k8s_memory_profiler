@@ -1,0 +1,15 @@
+# stage : peak memory usage GB
+syn 100
+floorplan 50
+place 60
+cts 100
+route 150
+chip_finish 60
+dummy 40
+merge 40
+starrc 40
+pt 100
+drc 60
+lvs 40
+lec 20
+

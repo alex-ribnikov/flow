@@ -1,0 +1,17 @@
+
+LAYOUT PATH "GDSFILENAME"
+LAYOUT PRIMARY "TOPCELLNAME"
+LAYOUT SYSTEM OASIS
+
+
+#DEFINE CHECK_LOW_DENSITY   // Turn off to skip local low density and empty space check in cell level before dummy insertion 
+// #DEFINE WITH_APRDL          // Turn on if AP_RDL is applied
+// #DEFINE SHDMIM              // Turn on to check related MIM.AP.* rules
+// #DEFINE FULL_CHIP           // Turn on for chip level design
+
+#DEFINE FRONT_END           // Turn on to check Front-End rules
+#DEFINE BACK_END            // Turn on to check Back-End rules
+
+include scripts/ruleset/CLN5LO_17M_014_ANT.12a.encrypt
+
+LAYOUT INPUT EXCEPTION SEVERITY MISSING_REFERENCE 1

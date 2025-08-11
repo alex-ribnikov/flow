@@ -1,0 +1,28 @@
+
+LAYOUT PATH "GDSFILENAME"
+LAYOUT PRIMARY "TOPCELLNAME"
+LAYOUT SYSTEM OASIS
+/// DFM DEFAULTS RDB OASIS FILE "DM_TOPCELLNAME.oas" PREFIX DM_
+DFM DEFAULTS RDB OASIS FILE "DM_TOPCELLNAME.oas" 
+
+
+// #DEFINE CHECK_LOW_DENSITY   // Turn off to skip local low density and empty space check in cell level before dummy insertion 
+// #DEFINE WITH_APRDL          // Turn on if AP_RDL is applied
+// #DEFINE SHDMIM              // Turn on to check related MIM.AP.* rules
+
+#DEFINE FRONT_END           // Turn on to check Front-End rules
+#DEFINE BACK_END            // Turn on to check Back-End rules
+
+include scripts/ruleset/Dummy_BEOL_CalibreYE_5nm_014.12a
+
+
+// #DEFINE CHIPLET 
+
+
+#IFDEF CHIPLET
+   #DEFINE FILL_DM16                      // turn on to fill dummy M16  //If there is not any other metal type specified, it will be designed DM16/DVIA15 as DMx/DMx_O
+   #DEFINE FILL_DM17                      // turn on to fill dummy M17  //If there is not any other metal type specified, it will be designed DM17/DVIA16 as DMx/DMx_O
+#ENDIF
+
+
+LAYOUT INPUT EXCEPTION SEVERITY MISSING_REFERENCE 1

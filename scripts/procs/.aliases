@@ -1,0 +1,32 @@
+# Define be proj aliases
+
+alias be_setup 'source $BEROOT/be_scripts/setup.csh'
+alias unsetup  'source $BEROOT/be_scripts/bin/unsetup.csh'
+alias ?        '$BEROOT/be_scripts/bin/echo_env_vars.tcl'
+alias load_modules	'module load wb $DEF_TOOLS_innovus_'
+
+alias work_areas 'tree -d -L 3 $BEROOT/be_work'
+
+############################################################
+# Helpers
+alias generate_private_filelist $BEROOT/be_scripts/bin/generate_private_filelist.tcl
+
+alias block_list '$BEROOT/be_scripts/bin/get_valid_block_list.py $BLOCKINFO'
+alias part_list  '$BEROOT/be_scripts/bin/get_valid_block_list.py $BLOCKINFO'
+
+############################################################
+# wb Flow 
+alias wb_do_log		'n -read \!*/log/do_*.log'
+alias wb_do_tcl		'n \!*/scr/do_*.tcl'
+alias wb_run_stat	'cat \!*/log/do_*.log | g "@file" | less +G'
+
+alias check_skews   'grep -E -A2 "Clock DAG|Primary reporting" \!*/log/do_innovusPreC.log | grep -B1 skew_group | sed -e '\''s/^[ \t]*//'\'' | awk '\''{if ($5 == "after") {print "" ; for(i=3;i<=NF;++i)printf $i""FS ; print ""} if ($3 == "insertion") { for(i=2;i<=13;++i)printf $i""FS ; print "" } }'\'' | less -S'
+alias check_shorts  'cat \!*/log/do_innovusPostC.log | grep -A15 " By Layer and Type " | less -S'
+
+
+############################################################
+# Tools
+alias inv $BEROOT/be_scripts/bin/innovus.csh
+alias gns $BEROOT/be_scripts/bin/genus.csh
+
+alias wb  $WB_ROOT/bin/wb

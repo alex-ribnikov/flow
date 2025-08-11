@@ -1,0 +1,5 @@
+.SUBCKT rm1w p n
+.ENDS
+
+.SUBCKT rm2w p n
+.ENDS

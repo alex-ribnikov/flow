@@ -1,0 +1,10 @@
+//#define FULL_CHIP           // Turn on for chip level design
+//#define WITH_SEALRING       // Turn on if sealring is assembled in chip 
+//#define CHECK_LOW_DENSITY   // Turn off to skip local low density and empty space check in cell level before dummy insertion
+//#define Flip_Chip // For flip chip rules. EX: stacking VIA
+//#define ALL_AREA_IO
+
+#define FRONT_END           // Turn on to check Front-End rules
+#define BACK_END            // Turn on to check Back-End rules
+
+#include "./scripts/ruleset/ICVN3ELO_19M_1Xa1Xb1Xc1Xd1Ya1Yb6Y2Yy2Yx2R_014.11_2a.encrypt"

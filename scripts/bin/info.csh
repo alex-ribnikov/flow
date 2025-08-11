@@ -1,0 +1,30 @@
+#!/bin/tcsh
+
+echo       "Env Var name          | Current Value      "
+echo       "----------------------------------------------"
+echo       "REPO_SOURCE           | $REPO_SOURCE          "
+echo       "TSMC_PDK              | $TSMC_PDK             "
+echo       "PROCESS               | $PROCESS              "
+echo       "LEF_SOURCE            | $LEF_SOURCE           "
+echo       "LIB_SOURCE            | $LIB_SOURCE           "
+echo       "DEF_TOOLS_innovus_    | $DEF_TOOLS_innovus_   "
+echo       "DEF_TOOLS_genus_      | $DEF_TOOLS_genus_     "
+echo       "DEF_TOOLS_tempus_     | $DEF_TOOLS_tempus_    "
+echo       "DEF_TOOLS_fv_         | $DEF_TOOLS_fv_        "
+echo       "DEF_TOOLS_clp_        | $DEF_TOOLS_clp_       "
+echo       "DEF_TOOLS_litmus_     | $DEF_TOOLS_litmus_    "
+echo       "DEF_TOOLS_qrc_        | $DEF_TOOLS_qrc_       "
+echo       "DEF_TOOLS_voltus_     | $DEF_TOOLS_voltus_    "
+echo       "DEF_TOOLS_pegasus_    | $DEF_TOOLS_pegasus_   "
+echo       "BLOCKINFO             | $BLOCKINFO            "
+echo       "BLOCKSDC              | $BLOCKSDC             "
+echo       "BLOCK                 | $BLOCK                "
+echo       "FILELIST              | $FILELIST             "
+echo       "PROJECT               | $PROJECT              "
+echo       "WORK                  | $WORK                 "
+echo       "PROJFLOW              | $PROJFLOW             "
+echo       "TEMPLATES             | $TEMPLATES            "
+echo       "CONTROLS              | $CONTROLS             "
+                   
+                   
+                   

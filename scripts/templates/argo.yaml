@@ -1,0 +1,35 @@
+---
+globals:
+  label: release
+  working-dir: WORKING_DIR
+  description: pnr
+  # timeout for workflow to end seconds(default: 0 - no timeout)
+  timeout: 0
+  # setup-command: first flow to run(default:
+  # yaml_to_blocksinfo.py -not_connected_block <block>)
+  # if something else, will be concat by && to yaml_to_blockinfo.py:
+  # e.g yaml_to_blocksinfo.py --verbose -not_connected_block &&
+  setup-command: echo setup
+  # this will be added to gen_filelist script grep as {}_RTL_ROOT
+  gen-filelist-relative:
+
+defaults:
+  image: docker.k8s.nextsilicon.com/repository/container-ns/hw-ldap:latest
+  cpu-request: 12
+  cpu-limit: 16
+  memory-request: 32Gi
+  memory-limit: 40Gi
+  command: ./scripts/be_scripts/syn_regressions/nextSynReg.py --verbose -overwrite_wa -yamls
+  continue-on-failure: false
+  copy-filelist-only: false
+  upload-csv: false
+  email-list: avner.adania@nextsilicon.com    # email list seperate with spaces
+
+report:
+  command: echo Done
+  cpu-request: 1
+  cpu-limit: 2 
+  memory-request: 2Gi
+  memory-limit: 4Gi
+
+blocks:
