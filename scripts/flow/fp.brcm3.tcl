@@ -1,21 +1,12 @@
-if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
-	set_auto_floorplan_constraints \
-		-core_utilization 0.5 \
-		-row_pattern H117_H169 \
-		-track_script ./scripts/layout/N3E-track-icc2.tcl
-	set_block_pin_constraints -self -allowed_layers {M6 M7 M8 M9 M10 M11 M12 M13 M14} -pin_spacing 1
-} else {
-	set env(ICPROCESS) cln03
-	set env(INQA_ROOT) /project/foundry/TSMC/N3/BRCM/PDK//20250416/inqa/
-	source ./scripts/bin/inqa/setup.tcl
+proc FLPSetAppOptions {} {
+	global block_boundary xMul yMul boundary_offset_x boundary_offset_y ROUTING_LAYER_DIRECTION_OFFSET_LIST
+	global vdd_net vss_net
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
 
-	if {$MANUAL_FP == "true" || $INTERACTIVE == "true" || $WIN == "true" || $OPEN != "None"} {
-		set cmd_out "return 1" 
-	} else {
-		set cmd_out "exit 0" 
-	}
-	#set cmd_out [expr { $MANUAL_FP||$INTERACTIVE||$WIN||([string compare $OPEN None]) ? "return" : "exit 0"}]	 
-
+	GInfo $script "Begin"
+	
+	set vdd_net VDD
+	set vss_net VSS
 	set xMul 31.92
 	set yMul 10.868
 	set boundary_offset_x 0.024
@@ -42,45 +33,62 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 		}
 	}
 
-	### user_manual ### 
-	if {[file exists ./scripts_local/user_manual_fp.tcl]} {
-		source ./scripts_local/user_manual_fp.tcl
-	} else {
-		puts "-E- ./scripts_local/user_manual_fp.tcl file not found!"
-		echo $cmd_out ; eval $cmd_out
-		#echo $cmd_out ; return 1
-	}
-	
+
+	GInfo $script "End"
+}
+
+
+
+proc FLPCreateBoundary {} {
+	global boundary_file block_boundary xMul yMul boundary_offset_x boundary_offset_y
+	global DESIGN_NAME
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
 	#------------------------------------------------------------------------------
 	# Block boundary definition
 	#------------------------------------------------------------------------------
 	# EA checking
-	if {[info exists block_boundary]} {	
-		if {[expr {[lsearch -exact [lmap x [join $block_boundary] {string is integer -strict $x}] 0] == -1}]} {
-			set block_boundary [lmap {x y} [join $block_boundary] {list [format %.3f [expr {$x * 31.92}]] [format %.3f [expr {$y * 10.868}]]}]
-			puts $block_boundary
-		}	
-		foreach p $block_boundary {
-			set p_x [lindex $p 0]
-			set p_y [lindex $p 1]
-			set p_x_mul [expr ${p_x}/${xMul} ]
-			set p_x_mul_int [expr int(${p_x_mul})]
-			set p_y_mul [expr ${p_y}/${yMul} ]
-			set p_y_mul_int [expr int(${p_y_mul})]
-			if {[expr abs($p_y_mul_int - $p_y_mul)] > 0.0000 || [expr abs($p_x_mul_int - $p_x_mul)] > 0.0000} {
-				puts "Error: found ILLEGAL X multiple $p_x_mul OR Y multiple $p_y_mul"
-				echo $cmd_out ; eval $cmd_out
-	#			echo $cmd_out ; return 1
+
+
+	puts "${boundary_file}"
+	if {[info exists boundary_file]&&[file exists $boundary_file]} {
+			puts "DGB: found ${boundary_file}"
+			if {![string compare [file extension $boundary_file] ".tcl"]} {
+				puts "DGB: soursing ${boundary_file}"
+				source $boundary_file
+				
+				if {[expr {[lsearch -exact [lmap x [join $block_boundary] {string is integer -strict $x}] 0] == -1}]} {
+					set block_boundary [lmap {x y} [join $block_boundary] {list [format %.3f [expr {$x * ${xMul}}]] [format %.3f [expr {$y * ${yMul}}]]}]
+					puts $block_boundary
+				}	
+				
+				foreach p $block_boundary {
+					set p_x [lindex $p 0]
+					set p_y [lindex $p 1]
+					set p_x_mul [expr ${p_x}/${xMul} ]
+					set p_x_mul_int [expr int(${p_x_mul})]
+					set p_y_mul [expr ${p_y}/${yMul} ]
+					set p_y_mul_int [expr int(${p_y_mul})]
+					
+					if {[expr abs($p_y_mul_int - $p_y_mul)] > 0.0000 || [expr abs($p_x_mul_int - $p_x_mul)] > 0.0000} {
+						puts "Error: found ILLEGAL X multiple $p_x_mul OR Y multiple $p_y_mul"
+#						echo $cmd_out ; eval $cmd_out
+	#					echo $cmd_out ; return 1
+						return 1
+					} else {
+						puts "Found legal X multiple $p_x_mul and Y multiple $p_y_mul"
+					}
+				}
 			} else {
-				puts "Found legal X multiple $p_x_mul and Y multiple $p_y_mul"
+			
+				save_block -compress -as ${DESIGN_NAME}/init_ERROR_boundary 
+				puts "-W- block_boundary variable not defined!"
+#				echo $cmd_out ; eval $cmd_out
+	#			echo $cmd_out ; return 1
+				return 1
 			}
-		}
-	} else {
-		save_block -compress -as ${DESIGN_NAME}/init_ERROR_boundary 
-	
-		puts "-W- block_boundary variable not defined!"
-		echo $cmd_out ; eval $cmd_out
-	#	echo $cmd_out ; return 1 
 	}
 	
 	# EA: using control type die and not core - to give the internal shape and have the IO core created around -
@@ -93,33 +101,55 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 	
 	remove_tracks -all
 	source -e -v scripts/layout/N3E-track-icc2.tcl
-	
+
+
+	GInfo $script "End"
+}
+
+
+
+proc FLPHardMacroPlacement {} {
+
+	global block_boundary xMul yMul boundary_offset_x boundary_offset_y
+	global block_boundary macros_file ports_file blockage_file post_fp_file
+	global MEM_PREFIX_PATTERN DESIGN_NAME
+
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
+ 	
 	#------------------------------------------------------------------------------
 	# hard macro placement
 	#------------------------------------------------------------------------------
 	if {[sizeof [get_cells -hier -filter {is_hard_macro}]]} {
 		if {[info exists macros_file]&&[file exists $macros_file]} {
+			puts "DGB: found ${macros_file}"
 			if {![string compare [file extension $macros_file] ".tcl"]} {
+				puts "DGB: soursing ${macros_file}"
 				source $macros_file
 			} elseif {[regexp {\.def(\.gz)?$} $macros_file]} {
 				read_def $macros_file
 			}
 			set size_unplaced_macro [sizeof_collection [get_cells -hierarchical -filter {is_hard_macro && physical_status == unplaced}]]
+			puts "DBG: unplaced macro count - ${size_unplaced_macro}"
 			if {$size_unplaced_macro} {
 				puts "ERROR: unplaced macros found ...\nreport file saved: unplaced_macro.rpt"
 				redirect -file unplaced_macros.rpt {get_attribute [get_cells -hierarchical -filter {is_hard_macro && physical_status == unplaced}] full_name}
-				if {!$FE_MODE} {
-					echo $cmd_out ; eval $cmd_out
-					# echo $cmd_out ; return 1
-				}	
+#				if {!$FE_MODE} {
+#					echo $cmd_out ; eval $cmd_out
+#					# echo $cmd_out ; return 1
+#				}
+				return 1
 			}
 		} else {
 			puts "-W- macros placement file not found!"
-			if {!$FE_MODE} {
-				echo $cmd_out ; eval $cmd_out
-				#echo $cmd_out ; return 1
-			}
-			
+#			if {!$FE_MODE} {
+#				echo $cmd_out ; eval $cmd_out
+#				#echo $cmd_out ; return 1
+#			}
+			return 1
+
 		}
 		
 		# creating macros grid(s) and snap macros to it (them)
@@ -242,11 +272,20 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 
 
 
-	
+	GInfo $script "End"
+}
+
+
+proc FLPInsertBoundaryTapCells {} {
+	global block_boundary xMul yMul
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
+
 	#--------------------
 	# place endcap
 	#--------------------
-	if {!$FE_MODE} {
 		
 		
 		# read_def out/def/nsc_l3u_wrapper_v3.before_tap.def.gz
@@ -378,13 +417,30 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 		check_legality -chipfinishing all
 		
 	
-	} ; # if {!$FE_MODE}
-							
+
+	GInfo $script "End"
+}
+
 	
+	#FLPHookPreFLPCreatePGMesh
+	
+	
+
+	
+
+	
+
+	
+
+proc FLPCreatePGMesh {} {
+	global block_boundary xMul yMul
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
 	#------------------------------------------------------------------------------
 	# power
 	#------------------------------------------------------------------------------
-	if {!$FE_MODE} {
 		set_app_option -name file.def.check_mask_constraints -value none
 		read_def ./scripts/layout/brcm3_pg_via.def
 		source ./scripts/layout/fc_create_power_grid.brcm3.tcl
@@ -396,15 +452,34 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 	
 		# Add verifyPowerVia for PG intersection VIA existence check.
 		#check_power_vias-check_wire_pin_overlap -error 1000000 -report missing_via.rpt
+	
+	################################################################################################
+###################################################################################################
+###################################################################################################
 		check_pg_missing_vias -output_file reports/init/missing_via.rpt
-	
-	
-		source -e -v ./scripts/layout/incr_pg_mesh.low_blocks.tcl
-	
+
+source -e -v ./scripts/layout/incr_pg_mesh.low_blocks.tcl
+
+##################################################################################################
+##################################################################################################
+
 		#derive_pg_mask_constraint -derive_cut_mask -check_fix_shape_drc -overwrite
 	
 		check_pg_drc > reports/init/check_pg_drc.rpt
-	}
+	
+
+
+	GInfo $script "End"
+}
+
+proc FLPPlacePorts {} {
+	global block_boundary xMul yMul ports_file
+	global DESIGN_NAME
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
+						
 	
 	#------------------------------------------------------------------------------
 	# place pins
@@ -426,36 +501,50 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 	    		-filename  reports/pin_placement.rpt ] 
 			if {[sizeof $size_violated_port]} {
 				puts "ERROR: violated ports ...\nreport file saved: reports/pin_placement.rpt"
-				if {!$FE_MODE} {
+#				if {!$FE_MODE} {
 					save_block -compress -as ${DESIGN_NAME}/init_ERROR_ports 
-					echo $cmd_out ; eval $cmd_out
+#					echo $cmd_out ; eval $cmd_out
 	#				echo $cmd_out ; return 1
 	
-				}	
+#				}	
 			}
 			
 			set size_unplaced_port [sizeof_collection [get_ports -filter {port_type==signal&&physical_status==unplaced}]]
 			if {$size_unplaced_port} {
 				puts "ERROR: unplaced ports ...\nreport file saved: unplaced_ports.rpt"	
 				redirect -file check_unplaced_ports.rpt {get_attribute [get_ports -filter {port_type==signal&&physical_status==unplaced}] name }
-				if {!$FE_MODE} {
-					echo $cmd_out ; eval $cmd_out
-	#				echo $cmd_out ; return 1
-				}
+#				if {!$FE_MODE} {
+#					echo $cmd_out ; eval $cmd_out
+#	#				echo $cmd_out ; return 1
+#				}
+				return 1
 			}
 	
 	} else {
 		puts "-W- port placement file not found!"
-		if {!$FE_MODE} {
-			echo $cmd_out ; eval $cmd_out
-	#		echo $cmd_out ; return 1
-		}
+#		if {!$FE_MODE} {
+#			echo $cmd_out ; eval $cmd_out
+#	#		echo $cmd_out ; return 1
+#		}
+		return 1
 	}
-	
+
+
+	GInfo $script "End"
+}
+
+proc FLPCreatePhyOnlyCells {} {
+	global block_boundary xMul yMul
+	global PRE_PLACE_DECAP ECO_DCAP_Y_STEP PRE_PLACE_ECO_DCAP
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
+
 	#------------------------------------------------------------------------------
 	# DCAP, GFILL insertion
 	#------------------------------------------------------------------------------
-	if {!$FE_MODE} {
+
 	
 		lassign [get_attribute [current_block] boundary_bounding_box.ur] die_x die_y
 		set num_of_walls [expr ceil(($die_x - 88.824) / 89.088)]
@@ -524,16 +613,105 @@ if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
 		set all_physical_only_cells_overlap_core [get_cells -within [get_attribute [current_block] boundary] -filter {is_physical_only}]
 		set physical_only_cells_outside_boundary [remove_from_collection $all_physical_only_cells $all_physical_only_cells_overlap_core]
 
-		remove_cells $physical_only_cells_outside_boundary
-	}
-	
-	#------------------------------------------------------------------------------
-	# post fp file 
-	#------------------------------------------------------------------------------
-	if {[info exists post_fp_file]&&[file exists $post_fp_file]} {
-		source $post_fp_file
-	}
-} ; #if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]}
+		if {[sizeof_collection $physical_only_cells_outside_boundary] != 0} {
+			remove_cells $physical_only_cells_outside_boundary
+		} else {
+			puts "DBG: no physical cells found outside the boundary"
+		}
+			
+			
 
+
+	GInfo $script "End"
+}
+
+proc FLPCheckFloorPlan {} {
+	global block_boundary xMul yMul
+	regexp {::(\S+)} [lindex [info level 0] 0] match script
+
+	GInfo $script "Begin"
+
+	GInfo $script "End"
+}
+
+
+########################################################################################################################################################
+##### Execution Part
+########################################################################################################################################################
+
+#global boundary_file macros_file ports_file blockage_file
+
+if {$FE_MODE && ![file exists ./scripts_local/user_manual_fp.tcl]} {
+	set_auto_floorplan_constraints \
+		-core_utilization 0.5 \
+		-row_pattern H117_H169 \
+		-track_script ./scripts/layout/N3E-track-icc2.tcl
+	set_block_pin_constraints -self -allowed_layers {M6 M7 M8 M9 M10 M11 M12 M13 M14} -pin_spacing 1
+	puts "-I- Exiting on FW mode set and no ./scripts_local/user_manual_fp.tcl found"
+	return 0
+
+} else {
+	set env(ICPROCESS) cln03
+	set env(INQA_ROOT) /project/foundry/TSMC/N3/BRCM/PDK//20250416/inqa/
+	source ./scripts/bin/inqa/setup.tcl
+
+	if {$MANUAL_FP == "true" || $INTERACTIVE == "true" || $WIN == "true" || $OPEN != "None"} {
+		set cmd_out "return 1" 
+	} else {
+		set cmd_out "exit 0" 
+	}
+}
+
+
+global block_boundary macros_file ports_file blockage_file post_fp_file
+	### user_manual ### 
+	if {[file exists ./scripts_local/user_manual_fp.tcl]} {
+		source ./scripts_local/user_manual_fp.tcl
+	} else {
+		puts "-E- ./scripts_local/user_manual_fp.tcl file not found!"
+		echo $cmd_out ; eval $cmd_out
+		#echo $cmd_out ; return 1
+	}
+
+
+
+
+	FLPSetAppOptions
+#
+#	# FLPHookPreCreateBoundary
+#
+	FLPCreateBoundary
+#
+#	# FLPHookPreHardMacroPlacement				;# Defined in scripts_local/hooks.tcl
+#
+	FLPHardMacroPlacement
+#
+#	# FLPHookPreInsertBoundaryTapCells				;# Defined in scripts_local/hooks.tcl
+#
+	FLPInsertBoundaryTapCells
+#	
+#	#FLPHookPreFLPCreatePGMesh
+#	
+	FLPCreatePGMesh
+#
+#	#FLPHookPrePlacePorts
+#
+	FLPPlacePorts
+#	
+#	#FLPHookPreCreatePhyOnlyCells
+#
+	FLPCreatePhyOnlyCells
+#	
+#	#FLPHookPreCheckFloorPlan
+#
+	FLPCheckFloorPlan
+
+
+
+	print_message_info -ids * -summary
 
 return 0
+	
+
+
+
