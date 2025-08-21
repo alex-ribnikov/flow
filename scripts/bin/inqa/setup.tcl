@@ -13,6 +13,9 @@
 #
 ###############################################################################
 
+
+puts "DBG: Soursing setup.tcl : Begin"
+
 ### Env check.
 ### Environment variable check.
 if {! [info exists env(ICPROCESS)]} {
@@ -50,19 +53,19 @@ if {[info commands dbDBUToMicrons] == ""} {
   eval interp alias [list {} dbgMicronPerDBU {}] ::DBUUtil::agMicronPerDBU
 }
 
-echo 1
-if {[info exists synopsys_program_name] && ($synopsys_program_name == "icc2_shell" || $synopsys_program_name == "fc_shell")} {
+#echo 1
+#if {[info exists synopsys_program_name] && ($synopsys_program_name == "icc2_shell" || $synopsys_program_name == "fc_shell")} {
   ### Create the needed p/g vias if they exist.
   set pgvias [file join $env(INQA_ROOT) $env(ICPROCESS) inqa floorplanning pgvias_for_iccii.tcl]
   set pgvias [glob [file join ./scripts/bin/inqa pgvias_for_iccii_$env(ICPROCESS).tcl]]
   echo "-I- $pgvias"
   if {[file readable $pgvias]} { source $pgvias }
-} else {
+#} else {
   ### Turn off logging of command-line arguments.
-  unlogCommand parse_proc_arguments
-  unlogCommand define_proc_arguments
-  unlogCommand define_proc_attributes
-}
+#  unlogCommand parse_proc_arguments
+#  unlogCommand define_proc_arguments
+#  unlogCommand define_proc_attributes
+#}
 
 echo "-I- utilities.tcl"
 source [file join $script_dir utilities.tcl]
@@ -75,4 +78,9 @@ source [file join $script_dir add_power.tcl]
 
 echo "-I- add_context_obs.tcl"
 source [file join $script_dir add_context_obs.tcl]
+
+
+
+puts "DBG: Soursing setup.tcl : End"
+
 
